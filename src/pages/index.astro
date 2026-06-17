@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
+import GlobalBackground from '../components/GlobalBackground.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 
@@ -16,64 +17,6 @@ const posts = (await getCollection('blog')).sort(
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
-			/* 内联样式补充背景特效 */
-			.noise-bg {
-				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-				opacity: 0.04;
-				mix-blend-mode: multiply;
-				pointer-events: none;
-				position: fixed;
-				inset: 0;
-				z-index: 0;
-			}
-			.meteor-container {
-				display: none;
-				position: fixed;
-				inset: 0;
-				overflow: hidden;
-				pointer-events: none;
-				z-index: 1;
-			}
-			:global(.dark) .meteor-container {
-				display: block;
-			}
-			.meteor {
-				position: absolute;
-				width: 2px;
-				height: 150px;
-				background: linear-gradient(to bottom, transparent, var(--color-brand));
-				opacity: 0;
-				animation: meteor-fall linear infinite;
-			}
-			.meteor::after {
-				content: '';
-				position: absolute;
-				bottom: -2px;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 4px;
-				height: 4px;
-				border-radius: 50%;
-				background: var(--color-brand);
-				box-shadow: 0 0 12px 3px var(--color-brand);
-			}
-			@keyframes meteor-fall {
-				0% {
-					opacity: 0;
-					transform: rotate(-45deg) translateY(-200px);
-				}
-				5% {
-					opacity: 1;
-				}
-				40% {
-					opacity: 0;
-					transform: rotate(-45deg) translateY(2500px);
-				}
-				100% {
-					opacity: 0;
-					transform: rotate(-45deg) translateY(2500px);
-				}
-			}
 			/* Flip Card Styles */
 			.flip-card {
 				perspective: 1500px;
@@ -112,64 +55,10 @@ const posts = (await getCollection('blog')).sort(
 				pointer-events: none;
 				transition: opacity 0s 0.3s;
 			}
-
-			/* Celestial Scene Animations */
-			.celestial-sun {
-				transform: translateY(0) scale(1);
-				opacity: 1;
-				transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-			}
-			.celestial-moon {
-				transform: translateY(100px) scale(0.8);
-				opacity: 0;
-				transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-			}
-
-			:global(.dark) .celestial-sun {
-				transform: translateY(120px) scale(0.8);
-				opacity: 0;
-			}
-			:global(.dark) .celestial-moon {
-				transform: translateY(0) scale(1);
-				opacity: 1;
-			}
 		</style>
 	</head>
 	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen flex flex-col">
-		
-		<!-- 全局动效背景 -->
-		<div class="fixed inset-0 z-0 bg-gradient-to-t from-[var(--color-bg-gradient-from)] via-[var(--color-bg-gradient-via)] via-40% to-[var(--color-bg-gradient-to)] pointer-events-none"></div>
-		<div class="noise-bg"></div>
-		<!-- 动态流星背景 -->
-		<div class="meteor-container">
-			<div class="meteor" style="top: -10%; left: 70%; animation-duration: 7s; animation-delay: 0s;"></div>
-			<div class="meteor" style="top: -20%; left: 90%; animation-duration: 9s; animation-delay: 2s;"></div>
-			<div class="meteor" style="top: 10%; left: 110%; animation-duration: 6s; animation-delay: 1.5s;"></div>
-			<div class="meteor" style="top: -5%; left: 40%; animation-duration: 8s; animation-delay: 4s;"></div>
-			<div class="meteor" style="top: 20%; left: 120%; animation-duration: 10s; animation-delay: 3s;"></div>
-			<div class="meteor" style="top: -30%; left: 80%; animation-duration: 8.5s; animation-delay: 5s;"></div>
-		</div>
-		
-		<!-- 昼夜交替特效背景 (素描风) -->
-		<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-			<!-- 太阳 (右上角) -->
-			<div class="celestial-sun absolute top-16 right-10 md:right-24 w-16 h-16 md:w-20 md:h-20 text-[var(--color-primary)] opacity-60">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="12" cy="12" r="5" stroke-width="1.2" />
-					<circle cx="11.5" cy="12.5" r="4.5" stroke-width="0.5" />
-					<path d="M 12 2 L 12 5 M 12 19 L 12 22 M 2 12 L 5 12 M 19 12 L 22 12" stroke-width="1.2" />
-					<path d="M 4.93 4.93 L 7 7 M 17 17 L 19.07 19.07 M 4.93 19.07 L 7 17 M 17 7 L 19.07 4.93" stroke-width="1.2" />
-				</svg>
-			</div>
-
-			<!-- 月亮 (左上角) -->
-			<div class="celestial-moon absolute top-16 left-10 md:left-24 w-16 h-16 md:w-20 md:h-20 text-[var(--color-primary)] opacity-60">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M 21 12.79 A 9 9 0 1 1 11.21 3 A 7 7 0 0 0 21 12.79 Z" stroke-width="1.2" />
-					<path d="M 19 12.5 A 7.5 7.5 0 1 1 11.5 5 A 5.5 5.5 0 0 0 19 12.5 Z" stroke-width="0.5" />
-				</svg>
-			</div>
-		</div>
+		<GlobalBackground />
 		
 
 

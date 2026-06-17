@@ -2,6 +2,7 @@
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
+import GlobalBackground from '../../components/GlobalBackground.astro';
 import { SITE_TITLE } from '../../consts';
 
 const projects = [
@@ -38,7 +39,7 @@ const projects = [
 		</style>
 	</head>
 	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen flex flex-col">
-		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
+		<GlobalBackground />
 
 		<Header />
 

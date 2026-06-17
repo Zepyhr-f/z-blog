@@ -71,9 +71,9 @@ import MusicPlayer from './MusicPlayer.astro';
 	updateIcon();
 </script>
 
-<!-- 全局悬浮音乐播放器 (仅在非首页显示，首页有专属的居中播放器) -->
+<!-- 全局悬浮音乐播放器 (仅在非首页显示以维持后台播放，但隐藏UI界面) -->
 {Astro.url.pathname !== '/' && Astro.url.pathname !== '/index.html' && (
-	<div class="fixed top-1/2 -translate-y-1/2 left-4 md:left-8 xl:left-12 z-50 transition-transform duration-300 hover:scale-105 hidden sm:block">
+	<div style="display: none;" aria-hidden="true">
 		<MusicPlayer />
 	</div>
 )}
