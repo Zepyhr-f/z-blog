@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="woodGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#fae7cd" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#woodGradient)" />
+  
+  <!-- 左侧简笔画：远山与小木屋 -->
+  <g stroke="#a44525" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4" transform="translate(150, 850)">
+    <!-- 地平线 (写意的一笔) -->
+    <path d="M -80 80 Q 50 85 150 75" stroke-width="1.5" />
+    <!-- 远山 (极其简单的弧线) -->
+    <path d="M -50 78 Q -10 20 40 76" stroke-width="1" />
+    <!-- 屋顶 -->
+    <path d="M 35 45 L 65 15 L 95 45" stroke-width="2" />
+    <!-- 墙壁 -->
+    <path d="M 45 40 L 45 77" stroke-width="1.5" />
+    <path d="M 85 40 L 85 75" stroke-width="1.5" />
+  </g>
+  
+  <!-- 右侧简笔画：芦苇 / 小树枝 -->
+  <g stroke="#a44525" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4" transform="translate(1700, 850)">
+    <!-- 地平线 -->
+    <path d="M -80 80 Q 0 75 80 82" stroke-width="1.5" />
+    <!-- 主干 -->
+    <path d="M 0 80 Q 15 30 35 -20" stroke-width="2" />
+    <!-- 侧枝 1 -->
+    <path d="M 8 45 Q 30 20 50 5" stroke-width="1.5" />
+    <!-- 侧枝 2 -->
+    <path d="M 2 60 Q -25 35 -35 15" stroke-width="1.5" />
+  </g>
+</svg>

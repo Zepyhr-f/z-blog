@@ -1,0 +1,177 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth scroll-pt-20">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			/* 内联样式补充背景特效 */
+			.noise-bg {
+				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+				opacity: 0.04;
+				mix-blend-mode: multiply;
+				pointer-events: none;
+				position: fixed;
+				inset: 0;
+				z-index: 0;
+			}
+			.grid-overlay {
+				background-image: linear-gradient(rgba(164, 69, 37, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(164, 69, 37, 0.05) 1px, transparent 1px);
+				background-size: 40px 40px;
+				mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 80%);
+				-webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 80%);
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: 0;
+			}
+		</style>
+	</head>
+	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen">
+		
+		<!-- 全局动效背景 -->
+		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
+		<div class="noise-bg"></div>
+		<div class="grid-overlay"></div>
+		
+		<!-- 悬浮几何体 -->
+		<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+			<div class="shape w-64 h-64 rounded-[30%_70%_70%_30%/30%_30%_70%_70%] top-[10%] left-[5%] rotate-[-15deg]"></div>
+			<div class="shape w-48 h-48 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] top-[60%] right-[10%] rotate-[45deg]" style="animation-delay: -5s;"></div>
+			<div class="shape w-32 h-32 rounded-[50%] bottom-[15%] left-[20%]" style="animation-delay: -10s;"></div>
+		</div>
+
+
+		<Header />
+		
+		<main class="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col items-center">
+			
+			<!-- Hero Section -->
+			<section id="hero" class="w-full min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-10">
+				
+				<!-- 发光徽章 -->
+				<div class="glass-panel rounded-full px-5 py-2 flex items-center gap-3 mb-10 transform hover:scale-105 transition-transform cursor-pointer">
+					<div class="w-2 h-2 rounded-full bg-[var(--color-brand)] shadow-[0_0_8px_rgba(164,69,37,0.6)]" style="animation: pulse-badge 2s ease-in-out infinite;"></div>
+					<span class="text-[10px] font-bold tracking-[0.3em] uppercase text-[var(--color-secondary)]">System Online</span>
+				</div>
+
+				<!-- 动效标题 -->
+				<div class="text-center mb-8">
+					<h1 class="text-5xl md:text-7xl font-playfair font-bold text-[var(--color-primary)] leading-tight tracking-tight m-0">
+						<span class="animate-word delay-1">Hi,</span> 
+						<span class="animate-word delay-2">I'm</span> 
+						<span class="animate-word delay-3 text-[var(--color-brand)] italic">Zephyr</span>
+					</h1>
+					<!-- 分割线 -->
+					<div class="flex items-center justify-center gap-4 my-8">
+						<div class="h-[1px] w-16 bg-gradient-to-r from-transparent to-[var(--color-brand)]/50"></div>
+						<div class="w-1.5 h-1.5 rotate-45 border border-[var(--color-brand)]/50"></div>
+						<div class="h-[1px] w-16 bg-gradient-to-l from-transparent to-[var(--color-brand)]/50"></div>
+					</div>
+					<p class="text-lg md:text-xl font-serif-sc text-[var(--color-secondary)] tracking-widest font-light animate-word delay-4 m-0">
+						致虚极，守静笃。在代码与现实的交错中探索。
+					</p>
+				</div>
+
+				<!-- 无缝滚动标签 -->
+				<div class="w-full max-w-2xl overflow-hidden mb-12 mask-image-gradient relative">
+					<!-- Tailwind 没有内置 mask-image，用透明度渐变的左右遮罩模拟 -->
+					<div class="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[var(--color-bg-base)] to-transparent z-10"></div>
+					<div class="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[var(--color-bg-base)] to-transparent z-10"></div>
+					
+					<div class="flex gap-4 w-max" style="animation: marquee 20s linear infinite;">
+						<!-- 复制两遍实现无缝 -->
+						<div class="flex gap-4 pr-4">
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>Frontend</span>
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>Backend Architecture</span>
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>Go-Zero</span>
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>React & Astro</span>
+						</div>
+						<div class="flex gap-4">
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>Frontend</span>
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>Backend Architecture</span>
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>Go-Zero</span>
+							<span class="glass-panel px-4 py-2 rounded-full text-sm font-medium text-[var(--color-secondary)] whitespace-nowrap"><span class="text-[var(--color-brand)] mr-1">#</span>React & Astro</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- 玻璃态数据统计板 -->
+				<div class="glass-panel rounded-2xl flex items-center gap-8 md:gap-16 px-8 py-5 animate-word" style="animation-delay: 0.6s;">
+					<div class="flex flex-col items-center">
+						<span class="text-2xl font-bold font-playfair text-[var(--color-brand)]">20+</span>
+						<span class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-tertiary)] mt-1">Articles</span>
+					</div>
+					<div class="w-[1px] h-8 bg-[var(--color-border)]"></div>
+					<div class="flex flex-col items-center">
+						<span class="text-2xl font-bold font-playfair text-[var(--color-brand)]">5</span>
+						<span class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-tertiary)] mt-1">Projects</span>
+					</div>
+					<div class="w-[1px] h-8 bg-[var(--color-border)]"></div>
+					<div class="flex flex-col items-center">
+						<span class="text-2xl font-bold font-playfair text-[var(--color-brand)]">1M+</span>
+						<span class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-tertiary)] mt-1">Code Lines</span>
+					</div>
+				</div>
+			</section>
+
+			<!-- 模块内容区：双栏卡片 -->
+			<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+				
+				<!-- 知识分享 Card -->
+				<section id="knowledge" class="flex">
+					<a href="/blog" class="glass-panel w-full p-8 rounded-3xl group no-underline text-inherit flex flex-col hover:-translate-y-1 transition-transform duration-300">
+						<div class="flex items-center justify-between mb-6">
+							<h2 class="text-3xl m-0 font-serif-sc font-bold text-[var(--color-primary)]">知识分享</h2>
+							<div class="w-10 h-10 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand)] group-hover:bg-[var(--color-brand)] group-hover:text-white transition-colors">
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+							</div>
+						</div>
+						<div class="h-[1px] w-full bg-gradient-to-r from-[var(--color-brand)]/20 to-transparent mb-6"></div>
+						<p class="text-[var(--color-secondary)] leading-relaxed flex-1 m-0">
+							在前端工程化、微服务后端架构以及读书随笔中寻找平衡点。这里记录了开发过程中的踩坑经验与技术沉淀，点击进入探索。
+						</p>
+						<div class="mt-6 flex flex-wrap gap-2">
+							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">React / Astro</span>
+							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">Go-Zero</span>
+						</div>
+					</a>
+				</section>
+
+				<!-- 项目分享 Card -->
+				<section id="projects" class="flex">
+					<a href="/projects" class="glass-panel w-full p-8 rounded-3xl group no-underline text-inherit flex flex-col hover:-translate-y-1 transition-transform duration-300">
+						<div class="flex items-center justify-between mb-6">
+							<h2 class="text-3xl m-0 font-serif-sc font-bold text-[var(--color-primary)]">开源项目</h2>
+							<div class="w-10 h-10 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand)] group-hover:bg-[var(--color-brand)] group-hover:text-white transition-colors">
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+							</div>
+						</div>
+						<div class="h-[1px] w-full bg-gradient-to-r from-[var(--color-brand)]/20 to-transparent mb-6"></div>
+						<p class="text-[var(--color-secondary)] leading-relaxed flex-1 m-0">
+							将设想转化为现实。包括企业级后台系统 Zephyr Admin 等独立项目的实现细节与架构设计。
+						</p>
+						<div class="mt-6 flex flex-wrap gap-2">
+							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">Zephyr Admin</span>
+							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)] text-[var(--color-tertiary)] italic">Coming Soon...</span>
+						</div>
+					</a>
+				</section>
+
+			</div>
+
+		</main>
+		
+		<div class="relative z-10 w-full glass-panel border-b-0 border-l-0 border-r-0 mt-10">
+			<main class="max-w-6xl mx-auto px-6 py-10 text-center">
+				<Footer />
+			</main>
+		</div>
+		
+	</body>
+</html>

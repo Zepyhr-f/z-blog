@@ -1,0 +1,109 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+
+const projects = [
+	{
+		name: 'Zephyr Admin',
+		desc: '基于 Go-Zero 微服务框架与 React 构建的企业级后台管理系统，包含权限管理、业务流程引擎等核心模块。',
+		tags: ['Go-Zero', 'React', 'PostgreSQL'],
+		status: 'active',
+		href: 'https://github.com/Zepyhr-f/zephyr',
+	},
+	{
+		name: 'Coming Soon...',
+		desc: '更多项目正在建设中，敬请期待。',
+		tags: [],
+		status: 'soon',
+		href: null,
+	},
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={`开源项目 · ${SITE_TITLE}`} description="将设想转化为现实的开源项目集合" />
+		<style>
+			@keyframes wordIn {
+				from { opacity: 0; transform: translateY(20px); }
+				to { opacity: 1; transform: translateY(0); }
+			}
+			.card-enter {
+				animation: wordIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) backwards;
+			}
+		</style>
+	</head>
+	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen">
+		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
+
+		<Header />
+
+		<main class="relative z-10 w-full max-w-5xl mx-auto px-6 pt-28 pb-20">
+			<!-- Page Header -->
+			<div class="mb-12">
+				<p class="text-xs font-bold tracking-[0.3em] uppercase text-[var(--color-brand)] mb-3">Open Source</p>
+				<h1 class="text-4xl md:text-5xl font-playfair font-bold text-[var(--color-primary)] mb-4">开源项目</h1>
+				<div class="h-[1px] w-16 bg-[var(--color-brand)]/40"></div>
+				<p class="mt-4 text-[var(--color-secondary)] text-base leading-relaxed max-w-xl">
+					将设想转化为现实。记录独立项目的实现细节与架构设计，每一行代码都是一次探索。
+				</p>
+			</div>
+
+			<!-- Projects Grid -->
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				{projects.map((project, i) => (
+					<div
+						class={`glass-panel rounded-2xl p-7 flex flex-col gap-4 card-enter ${project.href ? 'hover:-translate-y-1 transition-transform duration-300' : 'opacity-70'}`}
+						style={`animation-delay: ${i * 0.08}s`}
+					>
+						<div class="flex items-start justify-between">
+							<div>
+								<h2 class="text-xl font-bold font-serif-sc text-[var(--color-primary)] m-0">{project.name}</h2>
+							</div>
+							<span class={`text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-full ${project.status === 'active' ? 'bg-[var(--color-brand)]/10 text-[var(--color-brand)]' : 'bg-[var(--color-border)] text-[var(--color-tertiary)]'}`}>
+								{project.status === 'active' ? 'Active' : 'Soon'}
+							</span>
+						</div>
+
+						<div class="h-[1px] w-full bg-gradient-to-r from-[var(--color-brand)]/20 to-transparent"></div>
+
+						<p class="text-sm text-[var(--color-secondary)] leading-relaxed m-0 flex-1">
+							{project.desc}
+						</p>
+
+						{project.tags.length > 0 && (
+							<div class="flex flex-wrap gap-2">
+								{project.tags.map(tag => (
+									<span class="px-2 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">
+										{tag}
+									</span>
+								))}
+							</div>
+						)}
+
+						{project.href && (
+							<a
+								href={project.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="mt-1 flex items-center gap-2 text-sm font-bold text-[var(--color-brand)] no-underline hover:gap-3 transition-all"
+							>
+								查看项目
+								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+							</a>
+						)}
+					</div>
+				))}
+			</div>
+		</main>
+
+		<div class="relative z-10 w-full glass-panel border-b-0 border-l-0 border-r-0 mt-10">
+			<div class="max-w-5xl mx-auto px-6 py-10 text-center">
+				<Footer />
+			</div>
+		</div>
+	</body>
+</html>
