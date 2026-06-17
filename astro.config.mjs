@@ -12,7 +12,7 @@ export default defineConfig({
   devToolbar: {
     enabled: false
   },
-  site: 'https://example.com',
+  site: 'https://blog.zephyr.green',
   integrations: [mdx(), sitemap(), react()],
 
   fonts: [

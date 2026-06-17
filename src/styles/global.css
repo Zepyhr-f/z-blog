@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Cormorant+Garamond:wght@600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -8,8 +9,6 @@
   --color-bg-base: #fdfbf7;
   --color-border: #d7ccc8;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Cormorant+Garamond:wght@600;700&display=swap');
 
 :root {
 	--color-brand: #a44525;

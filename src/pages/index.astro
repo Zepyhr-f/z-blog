@@ -32,7 +32,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			}
 		</style>
 	</head>
-	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen">
+	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen flex flex-col">
 		
 		<!-- 全局动效背景 -->
 		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
@@ -49,7 +49,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 		<Header />
 		
-		<main class="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col items-center">
+		<main class="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col items-center flex-1">
 			
 			<!-- Hero Section -->
 			<section id="hero" class="w-full min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-10">
@@ -167,10 +167,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 		</main>
 		
-		<div class="relative z-10 w-full glass-panel border-b-0 border-l-0 border-r-0 mt-10">
-			<main class="max-w-6xl mx-auto px-6 py-10 text-center">
-				<Footer />
-			</main>
+		<div class="mt-auto pb-8">
+			<Footer />
 		</div>
 		
 	</body>

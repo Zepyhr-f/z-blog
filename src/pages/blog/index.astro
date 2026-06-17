@@ -25,12 +25,12 @@ const posts = (await getCollection('blog')).sort(
 			}
 		</style>
 	</head>
-	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen">
+	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen flex flex-col">
 		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
 
 		<Header />
 
-		<main class="relative z-10 w-full max-w-5xl mx-auto px-6 pt-28 pb-20">
+		<main class="relative z-10 w-full max-w-5xl mx-auto px-6 pt-28 pb-20 flex-1">
 			<!-- Page Header -->
 			<div class="mb-12">
 				<p class="text-xs font-bold tracking-[0.3em] uppercase text-[var(--color-brand)] mb-3">Knowledge</p>
@@ -73,10 +73,8 @@ const posts = (await getCollection('blog')).sort(
 			)}
 		</main>
 
-		<div class="relative z-10 w-full glass-panel border-b-0 border-l-0 border-r-0 mt-10">
-			<div class="max-w-5xl mx-auto px-6 py-10 text-center">
-				<Footer />
-			</div>
+		<div class="mt-auto pb-8">
+			<Footer />
 		</div>
 	</body>
 </html>
