@@ -1,28 +1,36 @@
 ---
 ---
 <!-- 自定义右侧滚动条 -->
-<div id="custom-scrollbar" class="fixed right-4 md:right-10 top-24 bottom-24 w-4 z-40 hidden sm:flex flex-col items-center pointer-events-none transition-opacity duration-300">
+<div id="custom-scrollbar" class="fixed right-4 md:right-10 top-24 bottom-24 w-4 z-40 hidden sm:block pointer-events-none transition-opacity duration-300">
     
-    <!-- 上方多余出头的线条 -->
-    <div class="absolute -top-8 h-8 w-[1px] bg-[var(--color-border)]/60"></div>
+    <!-- 轨道主体，用于计算 0% 到 100% -->
+    <div class="absolute top-6 bottom-6 left-0 right-0">
+        <!-- 连续的中心线 -->
+        <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[var(--color-border)]/60"></div>
+        
+        <!-- 上边界半个菱形 (顶盖 /\) -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[calc(100%-1px)] w-3 h-4">
+            <svg viewBox="0 0 10 15" class="w-full h-full stroke-[var(--color-tertiary)] fill-transparent stroke-[1.5] opacity-60">
+                <polyline points="1,15 5,1 9,15"></polyline>
+            </svg>
+        </div>
 
-    <!-- 轨道背景 (带断点的小菱形和线段) -->
-    <div class="absolute inset-0 flex flex-col items-center justify-between w-full">
-        <div class="w-2 h-2 rotate-45 border border-[var(--color-tertiary)]/60 z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-tertiary)] transition-colors shrink-0" data-progress="0"></div>
-        <div class="flex-1 w-[1px] bg-[var(--color-border)]/60 my-1"></div>
-        <div class="w-2 h-2 rotate-45 border border-[var(--color-tertiary)]/60 z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-tertiary)] transition-colors shrink-0" data-progress="0.5"></div>
-        <div class="flex-1 w-[1px] bg-[var(--color-border)]/60 my-1"></div>
-        <div class="w-2 h-2 rotate-45 border border-[var(--color-tertiary)]/60 z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-tertiary)] transition-colors shrink-0" data-progress="1"></div>
-    </div>
+        <!-- 下边界半个菱形 (底托 \/) -->
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[calc(100%-1px)] w-3 h-4">
+            <svg viewBox="0 0 10 15" class="w-full h-full stroke-[var(--color-tertiary)] fill-transparent stroke-[1.5] opacity-60">
+                <polyline points="1,0 5,14 9,0"></polyline>
+            </svg>
+        </div>
 
-    <!-- 下方多余出头的线条 -->
-    <div class="absolute -bottom-8 h-8 w-[1px] bg-[var(--color-border)]/60"></div>
+        <!-- 动态节点容器 (根据导航栏的跳转节点生成) -->
+        <div id="scrollbar-nodes" class="absolute inset-0 pointer-events-none"></div>
 
-    <!-- 可滑动的透明细长菱形滑块 (用SVG实现透明描边，淡黑色) -->
-    <div id="custom-scroll-thumb" class="absolute top-0 -translate-y-1/2 w-3 h-8 z-20 pointer-events-auto cursor-pointer flex justify-center items-center group">
-        <svg viewBox="0 0 10 30" class="w-full h-full text-[var(--color-primary)] opacity-70 fill-transparent stroke-current stroke-[1.5] drop-shadow-sm group-hover:fill-[var(--color-primary)]/20 transition-all backdrop-blur-sm">
-            <polygon points="5,1 9,15 5,29 1,15"></polygon>
-        </svg>
+        <!-- 可滑动的透明细长菱形滑块 -->
+        <div id="custom-scroll-thumb" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-8 z-20 pointer-events-auto cursor-pointer flex justify-center items-center group">
+            <svg viewBox="0 0 10 30" class="w-full h-full text-[var(--color-primary)] opacity-70 fill-transparent stroke-current stroke-[1.5] drop-shadow-sm group-hover:fill-[var(--color-primary)]/20 transition-all backdrop-blur-sm">
+                <polygon points="5,1 9,15 5,29 1,15"></polygon>
+            </svg>
+        </div>
     </div>
 </div>
 
@@ -31,15 +39,87 @@
     let track: HTMLElement | null = null;
     let thumb: HTMLElement | null = null;
 
+    const generateNodes = () => {
+        const nodesContainer = document.getElementById('scrollbar-nodes');
+        if (!nodesContainer) return;
+        nodesContainer.innerHTML = '';
+        
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (scrollHeight <= 0) return;
+
+        // 获取顶部导航栏中所有带有锚点的跳转链接
+        const navLinks = Array.from(document.querySelectorAll('nav a[href*="#"]'));
+        const targetIds = navLinks.map(a => {
+            const href = (a as HTMLAnchorElement).getAttribute('href') || '';
+            const hashIndex = href.indexOf('#');
+            if (hashIndex !== -1) return href.substring(hashIndex + 1);
+            return null;
+        }).filter(Boolean) as string[];
+
+        // 去重
+        const uniqueIds = [...new Set(targetIds)];
+
+        uniqueIds.forEach(id => {
+            const sec = document.getElementById(id);
+            if (!sec) return;
+            
+            // 获取目标的滚动位置
+            let targetScrollY = sec.offsetTop;
+            // 考虑顶部透明导航栏的悬浮高度（大约64px）以及安全边距
+            const headerOffset = 64; 
+            targetScrollY = Math.max(0, targetScrollY - headerOffset);
+            
+            // 限制在最大滚动范围内
+            targetScrollY = Math.max(0, Math.min(targetScrollY, scrollHeight));
+            let progress = targetScrollY / scrollHeight;
+            
+            // 创建节点小菱形
+            const dot = document.createElement('div');
+            // 使用绝对定位的左中对齐，确保完美在中心线上
+            dot.className = 'absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rotate-45 border border-[var(--color-tertiary)] bg-[var(--color-bg-base)] z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-brand)] hover:border-[var(--color-brand)] transition-colors';
+            dot.style.top = `${progress * 100}%`;
+            
+            // 统一所有点击跳转行为（右侧节点和顶部导航栏）使用相同数学公式，确保毫无误差
+            const doScroll = (e?: Event) => {
+                if (e) e.preventDefault();
+                window.scrollTo({
+                    top: targetScrollY,
+                    behavior: 'smooth'
+                });
+            };
+            
+            dot.addEventListener('click', doScroll);
+            
+            // 拦截对应的顶部导航栏点击事件，强制使用相同的公式进行滚动
+            const relatedNavLinks = Array.from(document.querySelectorAll(`nav a[href$="#${id}"]`));
+            relatedNavLinks.forEach(link => {
+                // 移除旧的监听器防止重复
+                const clone = link.cloneNode(true);
+                link.parentNode?.replaceChild(clone, link);
+                clone.addEventListener('click', doScroll);
+            });
+            
+            nodesContainer.appendChild(dot);
+        });
+    };
+
+    let lastScrollHeight = 0;
+
     const updateThumbPosition = () => {
         if (isDragging || !thumb || !track) return;
         const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-        // If content isn't scrollable, hide the scrollbar
         if (scrollHeight <= 0) {
             track.style.opacity = '0';
             track.style.pointerEvents = 'none';
             return;
         }
+        
+        // 如果页面高度发生改变（比如图片加载完毕导致撑高），重新计算节点位置
+        if (lastScrollHeight !== scrollHeight && lastScrollHeight !== 0) {
+            generateNodes();
+        }
+        lastScrollHeight = scrollHeight;
+
         track.style.opacity = '1';
         track.style.pointerEvents = '';
         
@@ -49,7 +129,7 @@
 
     const onMouseMove = (e: MouseEvent) => {
         if (!isDragging || !track || !thumb) return;
-        const trackRect = track.getBoundingClientRect();
+        const trackRect = track.querySelector('.absolute.top-6.bottom-6')?.getBoundingClientRect() || track.getBoundingClientRect();
         let progress = (e.clientY - trackRect.top) / trackRect.height;
         progress = Math.max(0, Math.min(1, progress));
         
@@ -66,13 +146,14 @@
         }
     };
 
-    // Attach global listeners ONCE
     window.addEventListener('scroll', updateThumbPosition, { passive: true });
-    window.addEventListener('resize', updateThumbPosition);
+    window.addEventListener('resize', () => {
+        updateThumbPosition();
+        generateNodes(); // 重新计算节点位置
+    });
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
-    // Re-initialize elements on each page load
     document.addEventListener('astro:page-load', () => {
         thumb = document.getElementById('custom-scroll-thumb');
         track = document.getElementById('custom-scrollbar');
@@ -85,21 +166,12 @@
         };
         thumb.addEventListener('mousedown', onMouseDown);
 
-        const nodes = track.querySelectorAll('[data-progress]');
-        nodes.forEach(node => {
-            node.addEventListener('click', () => {
-                const targetProgress = parseFloat(node.getAttribute('data-progress'));
-                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                window.scrollTo({
-                    top: targetProgress * scrollHeight,
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Use requestAnimationFrame to ensure DOM is fully ready
+        // 初始化生成节点和小滑块位置
         requestAnimationFrame(() => {
-            setTimeout(updateThumbPosition, 100);
+            setTimeout(() => {
+                generateNodes();
+                updateThumbPosition();
+            }, 100);
         });
     });
 </script>

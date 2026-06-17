@@ -23,7 +23,7 @@ const imageUrl = typeof image === 'string' ? image : image?.src || '/logo.svg';
 <meta charset="utf-8" />
 <ClientRouter />
 <script is:inline>
-	const theme = (() => {
+	const getTheme = () => {
 		if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
 			return localStorage.getItem('theme');
 		}
@@ -31,12 +31,22 @@ const imageUrl = typeof image === 'string' ? image : image?.src || '/logo.svg';
 			return 'dark';
 		}
 		return 'light';
-	})();
-	if (theme === 'dark') {
-		document.documentElement.classList.add('dark');
-	} else {
-		document.documentElement.classList.remove('dark');
-	}
+	};
+
+	const setTheme = () => {
+		const theme = getTheme();
+		if (theme === 'dark') {
+			document.documentElement.classList.add('dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+		}
+	};
+
+	// 初始加载时应用主题
+	setTheme();
+
+	// 确保在 Astro 的 ViewTransitions 页面切换后（DOM 替换后）重新应用主题，防止变成白天模式
+	document.addEventListener('astro:after-swap', setTheme);
 </script>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

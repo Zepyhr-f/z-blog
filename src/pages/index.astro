@@ -1,6 +1,5 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
 import GlobalBackground from '../components/GlobalBackground.astro';
@@ -13,7 +12,7 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth scroll-pt-20">
+<html lang="en" class="scroll-smooth">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
@@ -112,15 +111,37 @@ const posts = (await getCollection('blog')).sort(
 					</div>
 				</div>
 
+				</div>
+
 				<!-- 首屏专属音乐播放器 (随页面滚动) -->
-				<div class="z-30 mt-4 transition-transform duration-300 hover:scale-105">
+				<div class="z-30 transition-transform duration-300 hover:scale-105 mb-8">
 					<MusicPlayer />
+				</div>
+
+				<!-- Social Links / Personal Info -->
+				<div class="flex items-center gap-6 z-30">
+					<!-- GitHub -->
+					<a href="https://github.com/Zepyhr-f" target="_blank" class="text-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:-translate-y-1 transition-all duration-300 group relative" aria-label="GitHub">
+						<svg class="w-6 h-6 opacity-80 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+						<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--color-bg-base)] border border-[var(--color-border)] px-2 py-1 rounded shadow-lg pointer-events-none">GitHub</span>
+					</a>
+					<!-- Email -->
+					<a href="mailto:your-email@example.com" class="text-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:-translate-y-1 transition-all duration-300 group relative" aria-label="Email">
+						<svg class="w-6 h-6 opacity-80 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+						<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--color-bg-base)] border border-[var(--color-border)] px-2 py-1 rounded shadow-lg pointer-events-none whitespace-nowrap">Email</span>
+					</a>
+					<!-- QQ -->
+					<div class="text-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:-translate-y-1 transition-all duration-300 group relative cursor-pointer" aria-label="QQ">
+						<svg class="w-6 h-6 opacity-80 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="currentColor"><path d="M12.01 2.012c-4.484 0-8.118 3.633-8.118 8.118 0 2.122.81 4.053 2.136 5.498-.242.493-.82 1.332-2.158 1.834-.236.088-.344.364-.204.568.51.75 1.558 1.05 2.502 1.026.49 1.057 1.47 1.848 2.628 2.062 1.764.324 3.636.324 5.4 0 1.157-.214 2.138-1.005 2.628-2.062.944.024 1.992-.276 2.502-1.026.14-.204.032-.48-.204-.568-1.338-.502-1.916-1.34-2.158-1.834 1.326-1.445 2.136-3.376 2.136-5.498 0-4.485-3.634-8.118-8.118-8.118zm-2.85 9.07c-.63 0-1.14-.51-1.14-1.14s.51-1.14 1.14-1.14 1.14.51 1.14 1.14-.51 1.14-1.14 1.14zm5.7 0c-.63 0-1.14-.51-1.14-1.14s.51-1.14 1.14-1.14 1.14.51 1.14 1.14-.51 1.14-1.14 1.14z"/></svg>
+						<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--color-bg-base)] border border-[var(--color-border)] px-2 py-1 rounded shadow-lg pointer-events-none whitespace-nowrap">QQ: 你的号码</span>
+					</div>
 				</div>
 			</section>
 
 			<!-- Section 2: Categories -->
-			<section id="categories" class="w-full min-h-screen flex flex-col justify-center items-center pb-[25vh] scroll-mt-16">
-				<div class="w-full mb-10">
+			<section id="categories" class="w-full h-[calc(100vh-64px)] overflow-hidden flex flex-col justify-center items-center scroll-mt-16">
+				<div class="w-full flex-1 flex flex-col justify-center w-full">
+					<div class="w-full mb-10">
 					<h2 class="text-3xl md:text-4xl font-playfair font-bold text-[var(--color-primary)] text-center">Explorations</h2>
 					<p class="text-sm font-serif-sc tracking-widest text-[var(--color-secondary)] mt-3 text-center">文章专栏与独立项目</p>
 				</div>
@@ -313,12 +334,14 @@ const posts = (await getCollection('blog')).sort(
 					</div>
 				</section>
 
+				</div>
 			</div>
 			</section>
 
 			<!-- Section 3: Recent Updates -->
-			<section id="recent-posts" class="w-full min-h-screen flex flex-col justify-center items-center pb-[25vh] scroll-mt-16">
-				<div class="w-full mb-10 relative">
+			<section id="recent-posts" class="w-full h-[calc(100vh-64px)] overflow-hidden flex flex-col items-center scroll-mt-16">
+				<div class="w-full flex-1 flex flex-col justify-center">
+					<div class="w-full mb-10 relative">
 					<h2 class="text-3xl md:text-4xl font-playfair font-bold text-[var(--color-primary)] text-center">Recent Updates</h2>
 					<p class="text-sm font-serif-sc tracking-widest text-[var(--color-secondary)] mt-3 text-center">最新动态</p>
 					<a href="/blog" class="absolute right-0 bottom-0 text-xs font-mono tracking-widest text-[var(--color-brand)] hover:underline opacity-80 hover:opacity-100 transition-opacity">VIEW ALL -></a>
@@ -357,13 +380,10 @@ const posts = (await getCollection('blog')).sort(
 						</div>
 					)}
 				</div>
+				</div>
 			</section>
 
 		</main>
-		
-		<div class="w-full pb-8">
-			<Footer />
-		</div>
 		
 	</body>
 </html>

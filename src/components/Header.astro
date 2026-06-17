@@ -4,28 +4,34 @@ import MusicPlayer from './MusicPlayer.astro';
 import CustomScrollbar from './CustomScrollbar.astro';
 ---
 
-<!-- 悬浮顶部，全透明导航栏 -->
+<!-- 悬浮顶部导航栏，全透明 -->
 <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent">
 	<div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 		
 		<!-- Left: Logo -->
 		<div class="flex-1 flex items-center justify-start">
-			<a href="/" class="flex items-center gap-3 no-underline">
-				<img src="/logo.svg" alt="Zephyr" class="w-9 h-9 rounded-xl object-cover" />
+			<div class="flex items-center gap-3 select-none">
+				<img src="/logo.svg" alt="Zephyr" class="w-9 h-9 rounded-xl object-cover pointer-events-none" />
 				<span class="text-sm font-bold tracking-widest text-[var(--color-secondary)] font-cormorant uppercase hidden sm:block">Zephyr Blog</span>
-			</a>
+			</div>
 		</div>
 
 		<!-- Center: Navigation -->
-		<nav class="flex items-center justify-center gap-4 sm:gap-8 font-serif-sc text-base font-medium tracking-widest">
+		<nav class="flex items-center justify-center gap-4 sm:gap-6 font-serif-sc text-base font-medium tracking-widest border-b border-[var(--color-border)] pb-1 px-4 backdrop-blur-lg rounded-t-xl">
 			<a class="relative group text-[var(--color-primary)] no-underline px-2 py-1" href="/#hero">
 				<span>你好世界</span>
 				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
 			</a>
+			
+			<div class="w-[1px] h-3 bg-[var(--color-border)] opacity-50"></div>
+			
 			<a class="relative group text-[var(--color-primary)] no-underline px-2 py-1" href="/#categories">
 				<span>专栏跳转</span>
 				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
 			</a>
+
+			<div class="w-[1px] h-3 bg-[var(--color-border)] opacity-50"></div>
+
 			<a class="relative group text-[var(--color-primary)] no-underline px-2 py-1" href="/#recent-posts">
 				<span>最近动态</span>
 				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
