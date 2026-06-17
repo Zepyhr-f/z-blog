@@ -20,6 +20,9 @@
 	--color-glass-bg: rgba(255, 255, 255, 0.5);
 	--color-glass-border: rgba(255, 255, 255, 0.6);
 	--color-glass-shadow: rgba(0, 0, 0, 0.05);
+	--color-bg-gradient-from: #ebe3d5;
+	--color-bg-gradient-via: #eef2ea;
+	--color-bg-gradient-to: #ffffff;
 }
 
 :root.dark {
@@ -32,6 +35,9 @@
 	--color-glass-bg: rgba(20, 18, 17, 0.6);
 	--color-glass-border: rgba(255, 255, 255, 0.08);
 	--color-glass-shadow: rgba(0, 0, 0, 0.3);
+	--color-bg-gradient-from: #1a1612;
+	--color-bg-gradient-via: #0f1410;
+	--color-bg-gradient-to: #161b17;
 }
 
 body {

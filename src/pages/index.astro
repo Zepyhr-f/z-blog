@@ -107,12 +107,33 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				pointer-events: none;
 				transition: opacity 0s 0.3s;
 			}
+
+			/* Celestial Scene Animations */
+			.celestial-sun {
+				transform: translateY(0) scale(1);
+				opacity: 1;
+				transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+			.celestial-moon {
+				transform: translateY(100px) scale(0.8);
+				opacity: 0;
+				transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+
+			:global(.dark) .celestial-sun {
+				transform: translateY(120px) scale(0.8);
+				opacity: 0;
+			}
+			:global(.dark) .celestial-moon {
+				transform: translateY(0) scale(1);
+				opacity: 1;
+			}
 		</style>
 	</head>
 	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen flex flex-col">
 		
 		<!-- 全局动效背景 -->
-		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
+		<div class="fixed inset-0 z-0 bg-gradient-to-t from-[var(--color-bg-gradient-from)] via-[var(--color-bg-gradient-via)] via-40% to-[var(--color-bg-gradient-to)] pointer-events-none"></div>
 		<div class="noise-bg"></div>
 		<!-- 动态流星背景 -->
 		<div class="meteor-container">
@@ -122,6 +143,27 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			<div class="meteor" style="top: -5%; left: 40%; animation-duration: 8s; animation-delay: 4s;"></div>
 			<div class="meteor" style="top: 20%; left: 120%; animation-duration: 10s; animation-delay: 3s;"></div>
 			<div class="meteor" style="top: -30%; left: 80%; animation-duration: 8.5s; animation-delay: 5s;"></div>
+		</div>
+		
+		<!-- 昼夜交替特效背景 (素描风) -->
+		<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+			<!-- 太阳 (右上角) -->
+			<div class="celestial-sun absolute top-16 right-10 md:right-24 w-16 h-16 md:w-20 md:h-20 text-[var(--color-primary)] opacity-60">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="12" cy="12" r="5" stroke-width="1.2" />
+					<circle cx="11.5" cy="12.5" r="4.5" stroke-width="0.5" />
+					<path d="M 12 2 L 12 5 M 12 19 L 12 22 M 2 12 L 5 12 M 19 12 L 22 12" stroke-width="1.2" />
+					<path d="M 4.93 4.93 L 7 7 M 17 17 L 19.07 19.07 M 4.93 19.07 L 7 17 M 17 7 L 19.07 4.93" stroke-width="1.2" />
+				</svg>
+			</div>
+
+			<!-- 月亮 (左上角) -->
+			<div class="celestial-moon absolute top-16 left-10 md:left-24 w-16 h-16 md:w-20 md:h-20 text-[var(--color-primary)] opacity-60">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M 21 12.79 A 9 9 0 1 1 11.21 3 A 7 7 0 0 0 21 12.79 Z" stroke-width="1.2" />
+					<path d="M 19 12.5 A 7.5 7.5 0 1 1 11.5 5 A 5.5 5.5 0 0 0 19 12.5 Z" stroke-width="0.5" />
+				</svg>
+			</div>
 		</div>
 		
 
@@ -312,7 +354,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 										记录离开键盘后的世界。摄影、旅行、阅读，以及那些闪光的日常瞬间。
 									</p>
 								</div>
-								<a href="/blog" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
+								<a href="/notes" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
 									阅读随笔 &rarr;
 								</a>
 							</div>
@@ -355,7 +397,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 										了解 Zephyr 的技能栈、职业经历和联系方式。欢迎随时与我建立连接。
 									</p>
 								</div>
-								<a href="/" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
+								<a href="/about" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
 									了解更多 &rarr;
 								</a>
 							</div>
