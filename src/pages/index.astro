@@ -4,6 +4,11 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+).slice(0, 3);
 ---
 
 <!doctype html>
@@ -170,13 +175,105 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 		<Header />
 		
+		<!-- 自定义右侧滚动条 -->
+		<div id="custom-scrollbar" class="fixed right-4 md:right-10 top-24 bottom-24 w-4 z-40 hidden sm:flex flex-col items-center pointer-events-none">
+            
+            <!-- 上方多余出头的线条 -->
+            <div class="absolute -top-8 h-8 w-[1px] bg-[var(--color-border)]/60"></div>
+
+			<!-- 轨道背景 (带断点的小菱形和线段) -->
+			<div class="absolute inset-0 flex flex-col items-center justify-between w-full">
+				<div class="w-2 h-2 rotate-45 border border-[var(--color-tertiary)]/60 z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-tertiary)]/30 transition-colors shrink-0" data-progress="0"></div>
+				<div class="flex-1 w-[1px] bg-[var(--color-border)]/60 my-1"></div>
+				<div class="w-2 h-2 rotate-45 border border-[var(--color-tertiary)]/60 z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-tertiary)]/30 transition-colors shrink-0" data-progress="0.5"></div>
+				<div class="flex-1 w-[1px] bg-[var(--color-border)]/60 my-1"></div>
+				<div class="w-2 h-2 rotate-45 border border-[var(--color-tertiary)]/60 z-10 cursor-pointer pointer-events-auto hover:bg-[var(--color-tertiary)]/30 transition-colors shrink-0" data-progress="1"></div>
+			</div>
+
+            <!-- 下方多余出头的线条 -->
+            <div class="absolute -bottom-8 h-8 w-[1px] bg-[var(--color-border)]/60"></div>
+
+			<!-- 可滑动的透明细长菱形滑块 (用SVG实现透明描边) -->
+			<div id="custom-scroll-thumb" class="absolute top-0 -translate-y-1/2 w-3 h-8 z-20 pointer-events-auto cursor-pointer flex justify-center items-center group">
+				<svg viewBox="0 0 10 30" class="w-full h-full text-[var(--color-brand)] fill-transparent stroke-current stroke-[1.5] drop-shadow-sm group-hover:fill-[var(--color-brand)]/20 transition-colors backdrop-blur-sm">
+					<polygon points="5,1 9,15 5,29 1,15"></polygon>
+				</svg>
+			</div>
+		</div>
+
+		<script>
+			// 滚动条交互逻辑
+			document.addEventListener('DOMContentLoaded', () => {
+				const thumb = document.getElementById('custom-scroll-thumb');
+				const track = document.getElementById('custom-scrollbar');
+				if (!thumb || !track) return;
+
+				let isDragging = false;
+
+				const updateThumbPosition = () => {
+					if (isDragging) return;
+					const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+					if (scrollHeight <= 0) {
+						thumb.style.opacity = '0';
+						return;
+					}
+					thumb.style.opacity = '1';
+					const progress = window.scrollY / scrollHeight;
+					thumb.style.top = `${Math.max(0, Math.min(100, progress * 100))}%`;
+				};
+
+				window.addEventListener('scroll', updateThumbPosition, { passive: true });
+				window.addEventListener('resize', updateThumbPosition);
+				
+				setTimeout(updateThumbPosition, 100);
+
+				// 拖拽逻辑
+				thumb.addEventListener('mousedown', () => {
+					isDragging = true;
+					document.body.style.userSelect = 'none';
+				});
+
+				window.addEventListener('mousemove', (e) => {
+					if (!isDragging) return;
+					const trackRect = track.getBoundingClientRect();
+					let progress = (e.clientY - trackRect.top) / trackRect.height;
+					progress = Math.max(0, Math.min(1, progress));
+					
+					thumb.style.top = `${progress * 100}%`;
+					
+					const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+					window.scrollTo(0, progress * scrollHeight);
+				});
+
+				window.addEventListener('mouseup', () => {
+					if (isDragging) {
+						isDragging = false;
+						document.body.style.userSelect = '';
+					}
+				});
+
+				// 点击节点跳转逻辑
+				const nodes = document.querySelectorAll('#custom-scrollbar [data-progress]');
+				nodes.forEach(node => {
+					node.addEventListener('click', () => {
+						const targetProgress = parseFloat(node.getAttribute('data-progress'));
+						const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+						window.scrollTo({
+							top: targetProgress * scrollHeight,
+							behavior: 'smooth'
+						});
+					});
+				});
+			});
+		</script>
+
 		<main class="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col items-center flex-1">
 			
-			<!-- Hero Section -->
-			<section id="hero" class="w-full min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-10">
+			<!-- Hero Section (Section 1) -->
+			<section id="hero" class="w-full min-h-screen flex flex-col justify-center items-center relative">
 				
 				<!-- 动效标题 -->
-				<div class="text-center mb-8 -mt-20 md:-mt-32">
+				<div class="text-center mb-8 -mt-16">
 					<h1 class="text-5xl md:text-7xl font-playfair font-bold text-[var(--color-primary)] leading-tight tracking-tight m-0">
 						<span class="animate-word delay-1">Hi,</span> 
 						<span class="animate-word delay-2">I'm</span> 
@@ -216,13 +313,21 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					</div>
 				</div>
 
-				<!-- 音乐播放器小组件 -->
-				<MusicPlayer />
+				<!-- 首屏专属音乐播放器 (随页面滚动) -->
+				<div class="z-30 mt-4 transition-transform duration-300 hover:scale-105">
+					<MusicPlayer />
+				</div>
 			</section>
 
-			<!-- 模块内容区：四栏极简卡片 (Flip Card) -->
-			<div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24 border-y border-[var(--color-border)] py-10 relative">
-				<span class="absolute -top-3 left-6 bg-[var(--color-bg-base)] px-2 text-[10px] font-mono text-[var(--color-tertiary)] tracking-widest">// SECTIONS</span>
+			<!-- Section 2: Categories -->
+			<section id="categories" class="w-full min-h-screen flex flex-col justify-center items-center">
+				<div class="w-full mb-12">
+					<h2 class="text-3xl md:text-4xl font-playfair font-bold text-[var(--color-primary)] text-center">Explorations</h2>
+					<p class="text-sm font-serif-sc tracking-widest text-[var(--color-secondary)] mt-3 text-center">文章专栏与独立项目</p>
+				</div>
+				<!-- 模块内容区：四栏极简卡片 (Flip Card) -->
+				<div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 border-y border-[var(--color-border)] py-10 relative">
+					<span class="absolute -top-3 left-6 bg-[var(--color-bg-base)] px-2 text-[10px] font-mono text-[var(--color-tertiary)] tracking-widest">// SECTIONS</span>
 				
 				<!-- 知识分享 Card -->
 				<section id="knowledge" class="flex h-[22rem]">
@@ -406,10 +511,51 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				</section>
 
 			</div>
+			</section>
+
+			<!-- Section 3: Recent Updates -->
+			<section id="recent-posts" class="w-full min-h-screen flex flex-col justify-center items-center">
+				<div class="w-full mb-12 flex justify-between items-end border-b border-[var(--color-border)] pb-4">
+					<div>
+						<h2 class="text-3xl md:text-4xl font-playfair font-bold text-[var(--color-primary)]">Recent Updates</h2>
+						<p class="text-sm font-serif-sc tracking-widest text-[var(--color-secondary)] mt-2">最新动态</p>
+					</div>
+					<a href="/blog" class="text-xs font-mono tracking-widest text-[var(--color-brand)] hover:underline opacity-80 hover:opacity-100 transition-opacity">VIEW ALL -></a>
+				</div>
+				
+				<div class="w-full flex flex-col gap-6">
+					{posts.length > 0 ? (
+						posts.map((post) => (
+							<a href={`/blog/${post.id}/`} class="group block w-full p-6 bg-[var(--color-bg-base)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-primary)]/5 transition-colors relative overflow-hidden">
+								<div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent to-[var(--color-brand)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+								<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+									<div>
+										<h3 class="text-xl font-bold font-serif-sc text-[var(--color-primary)] group-hover:text-[var(--color-brand)] transition-colors m-0">{post.data.title}</h3>
+										<p class="text-sm text-[var(--color-secondary)] mt-2 opacity-80 font-serif-sc m-0 line-clamp-2">{post.data.description}</p>
+									</div>
+									<div class="flex-shrink-0 text-xs font-mono text-[var(--color-tertiary)] bg-[var(--color-bg-base)] px-3 py-1 rounded-full border border-[var(--color-border)]">
+										<time datetime={post.data.pubDate.toISOString()}>
+											{post.data.pubDate.toLocaleDateString('en-us', {
+												year: 'numeric',
+												month: 'short',
+												day: 'numeric',
+											})}
+										</time>
+									</div>
+								</div>
+							</a>
+						))
+					) : (
+						<div class="text-center py-10 text-[var(--color-tertiary)] font-serif-sc text-sm">
+							<p>暂无动态</p>
+						</div>
+					)}
+				</div>
+			</section>
 
 		</main>
 		
-		<div class="mt-auto pb-8">
+		<div class="w-full pb-8">
 			<Footer />
 		</div>
 		
