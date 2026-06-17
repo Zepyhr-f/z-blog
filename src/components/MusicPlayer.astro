@@ -1,0 +1,124 @@
+---
+---
+<div class="glass-panel rounded-full flex items-center gap-4 px-6 py-2.5 animate-word cursor-default hover:border-[var(--color-brand)]/30 transition-colors duration-300 shadow-sm border border-[var(--color-border)]/50" style="animation-delay: 0.6s;">
+	
+	<!-- Album Art -->
+	<div class="relative w-8 h-8 rounded-full overflow-hidden shadow-sm group-hover:shadow-md transition-all">
+		<div id="record-disk" class="w-full h-full bg-gradient-to-tr from-[var(--color-primary)] to-[var(--color-tertiary)] flex items-center justify-center animate-[spin_4s_linear_infinite] [animation-play-state:paused]">
+			<!-- Center hole -->
+			<div class="w-2.5 h-2.5 bg-[var(--color-bg-base)] rounded-full border border-[var(--color-border)]/30 shadow-inner"></div>
+		</div>
+	</div>
+
+	<!-- Track Info -->
+	<div class="flex flex-col justify-center min-w-[100px]">
+		<div class="flex items-center gap-2">
+			<span id="track-title" class="text-sm font-bold font-serif-sc text-[var(--color-primary)] m-0 leading-none">海之下</span>
+			
+			<!-- Visualizer bars -->
+			<div id="visualizer" class="flex items-end gap-[1.5px] h-2.5 opacity-0 transition-opacity">
+				<div class="w-[2px] bg-[var(--color-brand)] rounded-full h-full animate-[bounce_1s_ease-in-out_infinite]"></div>
+				<div class="w-[2px] bg-[var(--color-brand)] rounded-full h-[60%] animate-[bounce_1s_ease-in-out_infinite_0.2s]"></div>
+				<div class="w-[2px] bg-[var(--color-brand)] rounded-full h-[80%] animate-[bounce_1s_ease-in-out_infinite_0.4s]"></div>
+			</div>
+		</div>
+		<span class="text-[9px] font-mono text-[var(--color-secondary)] uppercase tracking-widest mt-1 opacity-80">Zephyr's Pick</span>
+	</div>
+
+	<div class="w-[1px] h-8 bg-gradient-to-b from-transparent via-[var(--color-border)] to-transparent mx-2 hidden sm:block"></div>
+
+	<!-- Controls -->
+	<div class="flex items-center gap-1">
+		<button id="prev-btn" class="w-7 h-7 flex items-center justify-center rounded-full text-[var(--color-primary)] hover:bg-[var(--color-brand)]/10 hover:text-[var(--color-brand)] transition-colors cursor-pointer" aria-label="Previous track">
+			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
+		</button>
+		
+		<button id="play-btn" class="w-9 h-9 flex items-center justify-center rounded-full bg-[var(--color-primary)]/5 hover:bg-[var(--color-brand)]/10 text-[var(--color-primary)] hover:text-[var(--color-brand)] transition-colors cursor-pointer" aria-label="Play or pause">
+			<svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+			<svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+		</button>
+		
+		<button id="next-btn" class="w-7 h-7 flex items-center justify-center rounded-full text-[var(--color-primary)] hover:bg-[var(--color-brand)]/10 hover:text-[var(--color-brand)] transition-colors cursor-pointer" aria-label="Next track">
+			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+		</button>
+	</div>
+
+	<!-- Hidden Audio Element -->
+	<audio id="bg-audio" preload="none">
+		<source src="/海之下.mp3" type="audio/mpeg" />
+	</audio>
+</div>
+
+<script>
+	const playBtn = document.getElementById('play-btn');
+	const prevBtn = document.getElementById('prev-btn');
+	const nextBtn = document.getElementById('next-btn');
+	const playIcon = document.getElementById('play-icon');
+	const pauseIcon = document.getElementById('pause-icon');
+	const audio = document.getElementById('bg-audio') as HTMLAudioElement;
+	const recordDisk = document.getElementById('record-disk');
+	const visualizer = document.getElementById('visualizer');
+	const trackTitle = document.getElementById('track-title');
+
+	const playlist = [
+		{ title: '海之下', src: '/海之下.mp3' },
+		{ title: '云之上', src: '/云之上.mp3' }
+	];
+	let currentIndex = 0;
+	let isPlaying = false;
+
+	function loadTrack(index) {
+		const track = playlist[index];
+		if (trackTitle) trackTitle.textContent = track.title;
+		if (audio) {
+			audio.src = track.src;
+			audio.load();
+		}
+	}
+
+	function playAudio() {
+		if (!audio) return;
+		audio.play().catch(() => console.log('Audio playback prevented by browser'));
+		isPlaying = true;
+		playIcon?.classList.add('hidden');
+		pauseIcon?.classList.remove('hidden');
+		recordDisk?.style.setProperty('animation-play-state', 'running');
+		visualizer?.classList.replace('opacity-0', 'opacity-100');
+	}
+
+	function pauseAudio() {
+		if (!audio) return;
+		audio.pause();
+		isPlaying = false;
+		playIcon?.classList.remove('hidden');
+		pauseIcon?.classList.add('hidden');
+		recordDisk?.style.setProperty('animation-play-state', 'paused');
+		visualizer?.classList.replace('opacity-100', 'opacity-0');
+	}
+
+	if (playBtn && audio) {
+		playBtn.addEventListener('click', () => {
+			if (isPlaying) pauseAudio();
+			else playAudio();
+		});
+
+		nextBtn?.addEventListener('click', () => {
+			currentIndex = (currentIndex + 1) % playlist.length;
+			loadTrack(currentIndex);
+			if (isPlaying) playAudio();
+		});
+
+		prevBtn?.addEventListener('click', () => {
+			currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+			loadTrack(currentIndex);
+			if (isPlaying) playAudio();
+		});
+
+		// Auto play next when ended
+		audio.addEventListener('ended', () => {
+			currentIndex = (currentIndex + 1) % playlist.length;
+			loadTrack(currentIndex);
+			playAudio();
+		});
+	}
+</script>

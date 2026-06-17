@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
@@ -20,15 +21,91 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				inset: 0;
 				z-index: 0;
 			}
-			.grid-overlay {
-				background-image: linear-gradient(rgba(164, 69, 37, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(164, 69, 37, 0.05) 1px, transparent 1px);
-				background-size: 40px 40px;
-				mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 80%);
-				-webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 80%);
+			.meteor-container {
+				display: none;
 				position: fixed;
 				inset: 0;
+				overflow: hidden;
 				pointer-events: none;
-				z-index: 0;
+				z-index: 1;
+			}
+			:global(.dark) .meteor-container {
+				display: block;
+			}
+			.meteor {
+				position: absolute;
+				width: 2px;
+				height: 150px;
+				background: linear-gradient(to bottom, transparent, var(--color-brand));
+				opacity: 0;
+				animation: meteor-fall linear infinite;
+			}
+			.meteor::after {
+				content: '';
+				position: absolute;
+				bottom: -2px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 4px;
+				height: 4px;
+				border-radius: 50%;
+				background: var(--color-brand);
+				box-shadow: 0 0 12px 3px var(--color-brand);
+			}
+			@keyframes meteor-fall {
+				0% {
+					opacity: 0;
+					transform: rotate(-45deg) translateY(-200px);
+				}
+				5% {
+					opacity: 1;
+				}
+				40% {
+					opacity: 0;
+					transform: rotate(-45deg) translateY(2500px);
+				}
+				100% {
+					opacity: 0;
+					transform: rotate(-45deg) translateY(2500px);
+				}
+			}
+			/* Flip Card Styles */
+			.flip-card {
+				perspective: 1500px;
+			}
+			.flip-card-inner {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+				transform-style: preserve-3d;
+			}
+			.flip-card:hover .flip-card-inner {
+				transform: rotateY(180deg);
+			}
+			.flip-card-front, .flip-card-back {
+				position: absolute;
+				inset: 0;
+			}
+			.flip-card-back {
+				transform: rotateY(180deg);
+				opacity: 0;
+				transition: opacity 0s 0.25s;
+				pointer-events: none;
+			}
+			.flip-card:hover .flip-card-back {
+				opacity: 1;
+				pointer-events: auto;
+				transition: opacity 0s 0.3s;
+			}
+			.flip-card-front {
+				opacity: 1;
+				transition: opacity 0s 0.25s;
+			}
+			.flip-card:hover .flip-card-front {
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 0s 0.3s;
 			}
 		</style>
 	</head>
@@ -37,14 +114,16 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<!-- 全局动效背景 -->
 		<div class="fixed inset-0 z-0 bg-[url('/bg.svg')] bg-cover bg-center pointer-events-none opacity-40"></div>
 		<div class="noise-bg"></div>
-		<div class="grid-overlay"></div>
-		
-		<!-- 悬浮几何体 -->
-		<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-			<div class="shape w-64 h-64 rounded-[30%_70%_70%_30%/30%_30%_70%_70%] top-[10%] left-[5%] rotate-[-15deg]"></div>
-			<div class="shape w-48 h-48 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] top-[60%] right-[10%] rotate-[45deg]" style="animation-delay: -5s;"></div>
-			<div class="shape w-32 h-32 rounded-[50%] bottom-[15%] left-[20%]" style="animation-delay: -10s;"></div>
+		<!-- 动态流星背景 -->
+		<div class="meteor-container">
+			<div class="meteor" style="top: -10%; left: 70%; animation-duration: 7s; animation-delay: 0s;"></div>
+			<div class="meteor" style="top: -20%; left: 90%; animation-duration: 9s; animation-delay: 2s;"></div>
+			<div class="meteor" style="top: 10%; left: 110%; animation-duration: 6s; animation-delay: 1.5s;"></div>
+			<div class="meteor" style="top: -5%; left: 40%; animation-duration: 8s; animation-delay: 4s;"></div>
+			<div class="meteor" style="top: 20%; left: 120%; animation-duration: 10s; animation-delay: 3s;"></div>
+			<div class="meteor" style="top: -30%; left: 80%; animation-duration: 8.5s; animation-delay: 5s;"></div>
 		</div>
+		
 
 
 		<Header />
@@ -54,14 +133,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			<!-- Hero Section -->
 			<section id="hero" class="w-full min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-10">
 				
-				<!-- 发光徽章 -->
-				<div class="glass-panel rounded-full px-5 py-2 flex items-center gap-3 mb-10 transform hover:scale-105 transition-transform cursor-pointer">
-					<div class="w-2 h-2 rounded-full bg-[var(--color-brand)] shadow-[0_0_8px_rgba(164,69,37,0.6)]" style="animation: pulse-badge 2s ease-in-out infinite;"></div>
-					<span class="text-[10px] font-bold tracking-[0.3em] uppercase text-[var(--color-secondary)]">System Online</span>
-				</div>
-
 				<!-- 动效标题 -->
-				<div class="text-center mb-8">
+				<div class="text-center mb-8 -mt-20 md:-mt-32">
 					<h1 class="text-5xl md:text-7xl font-playfair font-bold text-[var(--color-primary)] leading-tight tracking-tight m-0">
 						<span class="animate-word delay-1">Hi,</span> 
 						<span class="animate-word delay-2">I'm</span> 
@@ -101,66 +174,193 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					</div>
 				</div>
 
-				<!-- 玻璃态数据统计板 -->
-				<div class="glass-panel rounded-2xl flex items-center gap-8 md:gap-16 px-8 py-5 animate-word" style="animation-delay: 0.6s;">
-					<div class="flex flex-col items-center">
-						<span class="text-2xl font-bold font-playfair text-[var(--color-brand)]">20+</span>
-						<span class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-tertiary)] mt-1">Articles</span>
-					</div>
-					<div class="w-[1px] h-8 bg-[var(--color-border)]"></div>
-					<div class="flex flex-col items-center">
-						<span class="text-2xl font-bold font-playfair text-[var(--color-brand)]">5</span>
-						<span class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-tertiary)] mt-1">Projects</span>
-					</div>
-					<div class="w-[1px] h-8 bg-[var(--color-border)]"></div>
-					<div class="flex flex-col items-center">
-						<span class="text-2xl font-bold font-playfair text-[var(--color-brand)]">1M+</span>
-						<span class="text-[10px] font-bold tracking-widest uppercase text-[var(--color-tertiary)] mt-1">Code Lines</span>
-					</div>
-				</div>
+				<!-- 音乐播放器小组件 -->
+				<MusicPlayer />
 			</section>
 
-			<!-- 模块内容区：双栏卡片 -->
-			<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+			<!-- 模块内容区：四栏极简卡片 (Flip Card) -->
+			<div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24 border-y border-[var(--color-border)] py-10 relative">
+				<span class="absolute -top-3 left-6 bg-[var(--color-bg-base)] px-2 text-[10px] font-mono text-[var(--color-tertiary)] tracking-widest">// SECTIONS</span>
 				
 				<!-- 知识分享 Card -->
-				<section id="knowledge" class="flex">
-					<a href="/blog" class="glass-panel w-full p-8 rounded-3xl group no-underline text-inherit flex flex-col hover:-translate-y-1 transition-transform duration-300">
-						<div class="flex items-center justify-between mb-6">
-							<h2 class="text-3xl m-0 font-serif-sc font-bold text-[var(--color-primary)]">知识分享</h2>
-							<div class="w-10 h-10 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand)] group-hover:bg-[var(--color-brand)] group-hover:text-white transition-colors">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+				<section id="knowledge" class="flex h-[22rem]">
+					<div class="flip-card w-full h-full group">
+						<div class="flip-card-inner">
+							<!-- Front Face (Tech Style) -->
+							<div class="flip-card-front bg-[var(--color-bg-base)] rounded-xl border border-[var(--color-border)] flex flex-col justify-between p-4 shadow-sm group-hover:shadow-md transition-shadow duration-500 overflow-hidden">
+								<div class="flex justify-between text-[10px] text-[var(--color-tertiary)] uppercase tracking-wider font-mono opacity-80">
+									<span>/ SKILL_01</span>
+									<span>v1.0.0</span>
+								</div>
+								<div class="my-4 flex-1 w-full bg-[var(--color-primary)]/5 rounded-lg border border-[var(--color-border)]/50 flex flex-col items-center justify-center relative overflow-hidden">
+									<span class="absolute top-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute top-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<svg class="w-16 h-16 text-[var(--color-brand)] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+								</div>
+								<div class="mb-3">
+									<h2 class="text-xl font-bold text-[var(--color-primary)] font-serif-sc tracking-wide m-0">知识分享</h2>
+									<p class="text-[10px] text-[var(--color-secondary)] font-mono mt-1 opacity-80 flex items-center gap-1 m-0">
+										<span class="text-[var(--color-brand)] text-[8px]">▶</span> /skills/knowledge
+									</p>
+								</div>
+								<div class="pt-3 border-t border-[var(--color-border)]/30 flex justify-between items-center text-[10px] text-[var(--color-tertiary)] font-mono opacity-70">
+									<span>// 01</span>
+									<span>FIG.01</span>
+								</div>
+							</div>
+							
+							<!-- Back Face -->
+							<div class="flip-card-back bg-[var(--color-bg-base)] rounded-xl p-5 flex flex-col justify-between border-[var(--color-brand)]/30 border-2 shadow-lg">
+								<div>
+									<h3 class="text-xl m-0 font-serif-sc font-bold text-[var(--color-primary)] mb-3">知识分享</h3>
+									<p class="text-[var(--color-secondary)] leading-relaxed text-sm m-0">
+										在前端工程化、微服务后端架构以及读书随笔中寻找平衡点。这里记录了开发过程中的踩坑经验与技术沉淀。
+									</p>
+									<div class="mt-4 flex flex-wrap gap-1.5">
+										<span class="px-2 py-0.5 rounded bg-[var(--color-primary)]/5 border border-[var(--color-border)] text-[10px] font-medium text-[var(--color-secondary)]">React / Astro</span>
+										<span class="px-2 py-0.5 rounded bg-[var(--color-primary)]/5 border border-[var(--color-border)] text-[10px] font-medium text-[var(--color-secondary)]">Go-Zero</span>
+									</div>
+								</div>
+								<a href="/blog" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
+									进入专栏 &rarr;
+								</a>
 							</div>
 						</div>
-						<div class="h-[1px] w-full bg-gradient-to-r from-[var(--color-brand)]/20 to-transparent mb-6"></div>
-						<p class="text-[var(--color-secondary)] leading-relaxed flex-1 m-0">
-							在前端工程化、微服务后端架构以及读书随笔中寻找平衡点。这里记录了开发过程中的踩坑经验与技术沉淀，点击进入探索。
-						</p>
-						<div class="mt-6 flex flex-wrap gap-2">
-							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">React / Astro</span>
-							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">Go-Zero</span>
-						</div>
-					</a>
+					</div>
 				</section>
 
-				<!-- 项目分享 Card -->
-				<section id="projects" class="flex">
-					<a href="/projects" class="glass-panel w-full p-8 rounded-3xl group no-underline text-inherit flex flex-col hover:-translate-y-1 transition-transform duration-300">
-						<div class="flex items-center justify-between mb-6">
-							<h2 class="text-3xl m-0 font-serif-sc font-bold text-[var(--color-primary)]">开源项目</h2>
-							<div class="w-10 h-10 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand)] group-hover:bg-[var(--color-brand)] group-hover:text-white transition-colors">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+				<!-- 开源项目 Card -->
+				<section id="projects" class="flex h-[22rem]">
+					<div class="flip-card w-full h-full group">
+						<div class="flip-card-inner">
+							<div class="flip-card-front bg-[var(--color-bg-base)] rounded-xl border border-[var(--color-border)] flex flex-col justify-between p-4 shadow-sm group-hover:shadow-md transition-shadow duration-500 overflow-hidden">
+								<div class="flex justify-between text-[10px] text-[var(--color-tertiary)] uppercase tracking-wider font-mono opacity-80">
+									<span>/ SKILL_02</span>
+									<span>v1.0.0</span>
+								</div>
+								<div class="my-4 flex-1 w-full bg-[var(--color-primary)]/5 rounded-lg border border-[var(--color-border)]/50 flex flex-col items-center justify-center relative overflow-hidden">
+									<span class="absolute top-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute top-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<svg class="w-16 h-16 text-[var(--color-brand)] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+								</div>
+								<div class="mb-3">
+									<h2 class="text-xl font-bold text-[var(--color-primary)] font-serif-sc tracking-wide m-0">开源项目</h2>
+									<p class="text-[10px] text-[var(--color-secondary)] font-mono mt-1 opacity-80 flex items-center gap-1 m-0">
+										<span class="text-[var(--color-brand)] text-[8px]">▶</span> /skills/projects
+									</p>
+								</div>
+								<div class="pt-3 border-t border-[var(--color-border)]/30 flex justify-between items-center text-[10px] text-[var(--color-tertiary)] font-mono opacity-70">
+									<span>// 02</span>
+									<span>FIG.02</span>
+								</div>
+							</div>
+							
+							<div class="flip-card-back bg-[var(--color-bg-base)] rounded-xl p-5 flex flex-col justify-between border-[var(--color-brand)]/30 border-2 shadow-lg">
+								<div>
+									<h3 class="text-xl m-0 font-serif-sc font-bold text-[var(--color-primary)] mb-3">开源项目</h3>
+									<p class="text-[var(--color-secondary)] leading-relaxed text-sm m-0">
+										将设想转化为现实。包括企业级后台系统 Zephyr Admin 等独立项目的实现细节与架构设计。
+									</p>
+									<div class="mt-4 flex flex-wrap gap-1.5">
+										<span class="px-2 py-0.5 rounded bg-[var(--color-primary)]/5 border border-[var(--color-border)] text-[10px] font-medium text-[var(--color-secondary)]">Zephyr Admin</span>
+									</div>
+								</div>
+								<a href="/projects" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
+									查看项目 &rarr;
+								</a>
 							</div>
 						</div>
-						<div class="h-[1px] w-full bg-gradient-to-r from-[var(--color-brand)]/20 to-transparent mb-6"></div>
-						<p class="text-[var(--color-secondary)] leading-relaxed flex-1 m-0">
-							将设想转化为现实。包括企业级后台系统 Zephyr Admin 等独立项目的实现细节与架构设计。
-						</p>
-						<div class="mt-6 flex flex-wrap gap-2">
-							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)]">Zephyr Admin</span>
-							<span class="px-3 py-1 rounded bg-white/50 border border-[var(--color-border)] text-xs font-medium text-[var(--color-secondary)] text-[var(--color-tertiary)] italic">Coming Soon...</span>
+					</div>
+				</section>
+
+				<!-- 生活随笔 Card -->
+				<section id="life" class="flex h-[22rem]">
+					<div class="flip-card w-full h-full group">
+						<div class="flip-card-inner">
+							<div class="flip-card-front bg-[var(--color-bg-base)] rounded-xl border border-[var(--color-border)] flex flex-col justify-between p-4 shadow-sm group-hover:shadow-md transition-shadow duration-500 overflow-hidden">
+								<div class="flex justify-between text-[10px] text-[var(--color-tertiary)] uppercase tracking-wider font-mono opacity-80">
+									<span>/ SKILL_03</span>
+									<span>v1.0.0</span>
+								</div>
+								<div class="my-4 flex-1 w-full bg-[var(--color-primary)]/5 rounded-lg border border-[var(--color-border)]/50 flex flex-col items-center justify-center relative overflow-hidden">
+									<span class="absolute top-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute top-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<svg class="w-16 h-16 text-[var(--color-brand)] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+								</div>
+								<div class="mb-3">
+									<h2 class="text-xl font-bold text-[var(--color-primary)] font-serif-sc tracking-wide m-0">生活随笔</h2>
+									<p class="text-[10px] text-[var(--color-secondary)] font-mono mt-1 opacity-80 flex items-center gap-1 m-0">
+										<span class="text-[var(--color-brand)] text-[8px]">▶</span> /skills/life-notes
+									</p>
+								</div>
+								<div class="pt-3 border-t border-[var(--color-border)]/30 flex justify-between items-center text-[10px] text-[var(--color-tertiary)] font-mono opacity-70">
+									<span>// 03</span>
+									<span>FIG.03</span>
+								</div>
+							</div>
+							
+							<div class="flip-card-back bg-[var(--color-bg-base)] rounded-xl p-5 flex flex-col justify-between border-[var(--color-brand)]/30 border-2 shadow-lg">
+								<div>
+									<h3 class="text-xl m-0 font-serif-sc font-bold text-[var(--color-primary)] mb-3">生活随笔</h3>
+									<p class="text-[var(--color-secondary)] leading-relaxed text-sm m-0">
+										记录离开键盘后的世界。摄影、旅行、阅读，以及那些闪光的日常瞬间。
+									</p>
+								</div>
+								<a href="/blog" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
+									阅读随笔 &rarr;
+								</a>
+							</div>
 						</div>
-					</a>
+					</div>
+				</section>
+
+				<!-- 关于我 Card -->
+				<section id="about" class="flex h-[22rem]">
+					<div class="flip-card w-full h-full group">
+						<div class="flip-card-inner">
+							<div class="flip-card-front bg-[var(--color-bg-base)] rounded-xl border border-[var(--color-border)] flex flex-col justify-between p-4 shadow-sm group-hover:shadow-md transition-shadow duration-500 overflow-hidden">
+								<div class="flex justify-between text-[10px] text-[var(--color-tertiary)] uppercase tracking-wider font-mono opacity-80">
+									<span>/ SKILL_04</span>
+									<span>v1.0.0</span>
+								</div>
+								<div class="my-4 flex-1 w-full bg-[var(--color-primary)]/5 rounded-lg border border-[var(--color-border)]/50 flex flex-col items-center justify-center relative overflow-hidden">
+									<span class="absolute top-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute top-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 left-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<span class="absolute bottom-2 right-2 text-[var(--color-tertiary)] text-[8px] font-mono">+</span>
+									<svg class="w-16 h-16 text-[var(--color-brand)] drop-shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+								</div>
+								<div class="mb-3">
+									<h2 class="text-xl font-bold text-[var(--color-primary)] font-serif-sc tracking-wide m-0">关于我</h2>
+									<p class="text-[10px] text-[var(--color-secondary)] font-mono mt-1 opacity-80 flex items-center gap-1 m-0">
+										<span class="text-[var(--color-brand)] text-[8px]">▶</span> /skills/about-me
+									</p>
+								</div>
+								<div class="pt-3 border-t border-[var(--color-border)]/30 flex justify-between items-center text-[10px] text-[var(--color-tertiary)] font-mono opacity-70">
+									<span>// 04</span>
+									<span>FIG.04</span>
+								</div>
+							</div>
+							
+							<div class="flip-card-back bg-[var(--color-bg-base)] rounded-xl p-5 flex flex-col justify-between border-[var(--color-brand)]/30 border-2 shadow-lg">
+								<div>
+									<h3 class="text-xl m-0 font-serif-sc font-bold text-[var(--color-primary)] mb-3">关于我</h3>
+									<p class="text-[var(--color-secondary)] leading-relaxed text-sm m-0">
+										了解 Zephyr 的技能栈、职业经历和联系方式。欢迎随时与我建立连接。
+									</p>
+								</div>
+								<a href="/" class="mt-auto w-full py-2.5 rounded-lg bg-[var(--color-brand)] text-white text-center text-sm font-bold tracking-widest hover:brightness-110 hover:-translate-y-0.5 transition-all no-underline shadow-md shadow-[var(--color-brand)]/20">
+									了解更多 &rarr;
+								</a>
+							</div>
+						</div>
+					</div>
 				</section>
 
 			</div>
