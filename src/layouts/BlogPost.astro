@@ -35,7 +35,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				max-width: calc(100% - 2em);
 				margin: auto;
 				padding: 1em;
-				color: rgb(var(--gray-dark));
+				color: var(--color-primary);
 			}
 			.title {
 				margin-bottom: 1em;
@@ -48,7 +48,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			}
 			.date {
 				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
+				color: var(--color-secondary);
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -59,7 +59,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 	<body class="bg-[var(--color-bg-base)] relative overflow-x-hidden min-h-screen flex flex-col">
 		<GlobalBackground />
 		<Header />
-		<main class="flex-1">
+		<main class="relative z-10 flex-1 w-full max-w-4xl mx-auto px-6 pt-24 pb-20">
 			<article>
 				<div class="hero-image">
 					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}

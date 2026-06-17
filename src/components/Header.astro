@@ -1,10 +1,11 @@
 ---
 import { SITE_TITLE } from '../consts';
 import MusicPlayer from './MusicPlayer.astro';
+import CustomScrollbar from './CustomScrollbar.astro';
 ---
 
-<!-- 悬浮顶部，带高斯模糊的玻璃态导航栏 -->
-<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 backdrop-blur-xl border-b shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)]" style="background-color: var(--color-glass-bg); border-color: var(--color-glass-border);">
+<!-- 悬浮顶部，全透明导航栏 -->
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent">
 	<div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 		
 		<!-- Left: Logo -->
@@ -19,15 +20,15 @@ import MusicPlayer from './MusicPlayer.astro';
 		<nav class="flex items-center justify-center gap-4 sm:gap-8 font-serif-sc text-base font-medium tracking-widest">
 			<a class="relative group text-[var(--color-primary)] no-underline px-2 py-1" href="/#hero">
 				<span>你好世界</span>
-				<span class="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
+				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
 			</a>
 			<a class="relative group text-[var(--color-primary)] no-underline px-2 py-1" href="/#categories">
 				<span>专栏跳转</span>
-				<span class="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
+				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
 			</a>
 			<a class="relative group text-[var(--color-primary)] no-underline px-2 py-1" href="/#recent-posts">
 				<span>最近动态</span>
-				<span class="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
+				<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[var(--color-brand)] scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300"></span>
 			</a>
 		</nav>
 			
@@ -44,31 +45,30 @@ import MusicPlayer from './MusicPlayer.astro';
 </header>
 
 <script>
-	const themeToggleBtn = document.getElementById('theme-toggle');
-	const themeIconLight = document.getElementById('theme-icon-light');
-	const themeIconDark = document.getElementById('theme-icon-dark');
+	document.addEventListener('astro:page-load', () => {
+		const themeToggleBtn = document.getElementById('theme-toggle');
+		const themeIconLight = document.getElementById('theme-icon-light');
+		const themeIconDark = document.getElementById('theme-icon-dark');
 
-	function updateIcon() {
-		if (document.documentElement.classList.contains('dark')) {
-			themeIconLight?.classList.remove('hidden');
-			themeIconDark?.classList.add('hidden');
-		} else {
-			themeIconLight?.classList.add('hidden');
-			themeIconDark?.classList.remove('hidden');
+		function updateIcon() {
+			if (document.documentElement.classList.contains('dark')) {
+				themeIconLight?.classList.remove('hidden');
+				themeIconDark?.classList.add('hidden');
+			} else {
+				themeIconLight?.classList.add('hidden');
+				themeIconDark?.classList.remove('hidden');
+			}
 		}
-	}
 
-	// Update immediately
-	updateIcon();
-
-	themeToggleBtn?.addEventListener('click', () => {
-		const isDark = document.documentElement.classList.toggle('dark');
-		localStorage.setItem('theme', isDark ? 'dark' : 'light');
+		// Update immediately
 		updateIcon();
-	});
 
-	// 初始设置图标状态
-	updateIcon();
+		themeToggleBtn?.addEventListener('click', () => {
+			const isDark = document.documentElement.classList.toggle('dark');
+			localStorage.setItem('theme', isDark ? 'dark' : 'light');
+			updateIcon();
+		});
+	});
 </script>
 
 <!-- 全局悬浮音乐播放器 (仅在非首页显示以维持后台播放，但隐藏UI界面) -->
@@ -77,3 +77,6 @@ import MusicPlayer from './MusicPlayer.astro';
 		<MusicPlayer />
 	</div>
 )}
+
+<!-- 全局自定义滚动条 -->
+<CustomScrollbar />
