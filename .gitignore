@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# tooling caches / drafts (not for VCS)
+.claude/
+Style.md
