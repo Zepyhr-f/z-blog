@@ -43,16 +43,26 @@ const projects = [
 
 		<Header />
 
-		<main class="relative z-10 w-full max-w-5xl mx-auto px-6 pt-28 pb-20 flex-1">
-			<!-- Page Header -->
-			<div class="mb-12">
-				<p class="text-xs font-bold tracking-[0.3em] uppercase text-[var(--color-brand)] mb-3">Open Source</p>
-				<h1 class="text-4xl md:text-5xl font-playfair font-bold text-[var(--color-primary)] mb-4">开源项目</h1>
-				<div class="h-[1px] w-16 bg-[var(--color-brand)]/40"></div>
-				<p class="mt-4 text-[var(--color-secondary)] text-base leading-relaxed max-w-xl">
+		<!-- Hero Background Image -->
+		<div class="relative w-full h-[50vh] md:h-[60vh] overflow-hidden mb-16">
+			<div 
+				class="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105"
+				style="background-image: url('/shinichi-ran-bg.png');"
+			></div>
+			<div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--color-bg-base)]"></div>
+			<div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-base)] via-[var(--color-bg-base)]/20 to-transparent"></div>
+			
+			<!-- Hero Content -->
+			<div class="relative z-10 h-full flex flex-col justify-end max-w-5xl mx-auto px-6 pb-12">
+				<p class="text-xs font-bold tracking-[0.3em] uppercase text-[var(--color-brand)] mb-3 drop-shadow-lg">Open Source</p>
+				<h1 class="text-4xl md:text-6xl font-playfair font-bold text-white mb-4 drop-shadow-2xl">开源项目</h1>
+				<p class="text-white/90 text-lg leading-relaxed max-w-xl drop-shadow-lg">
 					将设想转化为现实。记录独立项目的实现细节与架构设计，每一行代码都是一次探索。
 				</p>
 			</div>
+		</div>
+
+		<main class="relative z-10 w-full max-w-5xl mx-auto px-6 pb-20 flex-1">
 
 			<!-- Projects Grid -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
